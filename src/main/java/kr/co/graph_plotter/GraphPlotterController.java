@@ -6,5 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class GraphPlotterController {
-
+    @GetMapping
+    public String graph() {
+        return "graph";
+    }
 }
