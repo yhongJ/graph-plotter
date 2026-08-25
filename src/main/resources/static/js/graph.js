@@ -1,3 +1,8 @@
+import Parser from "/parser.js";
+import BinaryOP from "/parser.js";
+import UnaryOP from "/parser.js";
+import tokenizer from "/tokenizer.js";
+
 //800 * 500 에서 원점은 (400, 250)
 //100px당 10으로 -> x (-40 ~ 40) y (-25 ~ 25)
 function x_position(x){
@@ -7,49 +12,50 @@ function y_position(y){
     return (-1 * y * scale) + canvas.height/2;
 }
 
-function tokenizer(expression){
-    expression = expression.replace(/\s/g, "");
-    const len = expression.length;
-    let i = 0;
-    const operators = ['+', '-', '*', '/', '^'];
-    const functions = ["sin", "cos", "tan", "log"];
-    const parsed_expression = [];
-    while(i < len){
-        if(expression[i] >= '0' && expression[i] <= '9'){
-            let next = i + 1;
-            let value = expression[i];
-            while(expression[next] >= '0' && expression[next] <= '9'){
-                value += expression[next];
-                next++;
-            }
-            parsed_expression.push(value);
-            i = next;
-        }
-        else if(operators.includes(expression[i])){
-            parsed_expression.push(expression[i]);
-            i++;
-        }
-        else if(functions.includes(expression.slice(i, i + 3))) {
-            if(expression[i + 3] !== '('){
-                alert("Transcendental functions require parentheses");
-                return false;
-            }
-            else{
-                parsed_expression.push(expression.slice(i, i + 3));
-                i += 3;
-            }
-        }
-        else if(expression[i] === '(' || expression[i] === ')'){
-            parsed_expression.push(expression[i]);
-            i++;
-        }
-        else{
-            alert("Invalid expression");
-            return false;
-        }
+let tokenized_expression = tokenizer(expression);
+let parser = new Parser(tokenized_expression);
 
-
+function calculate(node, x){
+    if(node instanceof BinaryOP){
+        let op = node.op;
+        if(op === "+"){
+            return calculate(node.left, x) + calculate(node.right, x);
+        }
+        else if(op === "-"){
+            return calculate(node.left, x) - calculate(node.right, x);
+        }
+        else if(op === "*"){
+            return calculate(node.left, x) * calculate(node.right, x);
+        }
+        else if(op === "/"){
+            return calculate(node.left, x) / calculate(node.right, x);
+        }
+        else if(op === "^"){
+            return calculate(node.left, x) ** calculate(node.right, x);
+        }
     }
-    return parsed_expression;
-
+    else if(node instanceof UnaryOP){
+        let op = node.op;
+        if(op === "-"){
+            return -1 * calculate(node.operand, x);
+        }
+        else if(op === "sin"){
+            return Math.sin(calculate(node.operand, x));
+        }
+        else if(op === "cos"){
+            return Math.cos(calculate(node.operand, x));
+        }
+        else if(op === "tan"){
+            return Math.tan(calculate(node.operand, x));
+        }
+        else if(op === "log"){
+            return Math.log(calculate(node.operand, x));
+        }
+    }
+    else if(Number.isInteger(Number(node))){
+        return Number(node);
+    }
+    else if(node === 'x'){
+        return x;
+    }
 }
