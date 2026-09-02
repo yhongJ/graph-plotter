@@ -1,4 +1,4 @@
-import { ExpresssionError} from "./errors.js";
+import { ExpressionError} from "./errors.js";
 
 export default function tokenizer(expression){
     expression = expression.replace(/\s/g, "");
@@ -40,7 +40,7 @@ export default function tokenizer(expression){
             i++;
         }
         else{
-            throw new ExpresssionError(`Unexpected character'${expression[i]}`);
+            throw new ExpressionError(`Unexpected character'${expression[i]}`);
         }
 
 

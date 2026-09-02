@@ -1,4 +1,4 @@
-import { Parser, BinaryOP, UnaryOP } from "/parser.js";
+import { Parser, BinaryOP, UnaryOP } from "./parser.js";
 
 export default function calculate(node, x){
     if(node instanceof BinaryOP){

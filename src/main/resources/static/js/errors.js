@@ -1,6 +1,6 @@
-export class ExpresssionError extends Error {
+export class ExpressionError extends Error {
     constructor(message){
         super(message);
-        this.name = "ExpresssionError";
+        this.name = "ExpressionError";
     }
 }
