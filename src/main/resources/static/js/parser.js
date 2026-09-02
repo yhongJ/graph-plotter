@@ -1,10 +1,22 @@
+import { ExpressionError } from "./errors.js";
+
+
 const functions = ["sin", "cos", "tan", "log"];
 
-class Parser{
+export class Parser{
     constructor(tokens){
         this.tokens = tokens;
         this.pos = 0;
     }
+
+    parse(){
+        const tree = this.expr();
+        if(this.pos !== this.tokens.length){
+            throw new ExpressionError(`Unexpected token '${this.tokens[this.pos]}'`);
+        }
+        return tree;
+    }
+
 
     expr(){
         let left = this.term();
@@ -49,6 +61,8 @@ class Parser{
         return left;
     }
 
+
+
     primary(){ //case1: 숫자, case2: x, case3: (expr), case4: 초월함수
         let left = this.tokens[this.pos];
         if(left === 'x'){
@@ -74,7 +88,7 @@ class Parser{
         else if(functions.includes(left)){
             let op = this.tokens[this.pos];
             this.pos++;
-            let operand = this.expr();
+            let operand = this.primary();
             return new UnaryOP(op, operand);
         }
         else{
@@ -86,7 +100,7 @@ class Parser{
 
 }
 
-class BinaryOP{
+export class BinaryOP{
     constructor(left, op, right){
         this.left = left;
         this.op = op;
@@ -94,7 +108,7 @@ class BinaryOP{
     }
 }
 
-class UnaryOP{
+export class UnaryOP{
     constructor(op, operand){
         this.op = op;
         this.operand = operand;

@@ -1,5 +1,6 @@
+import { ExpresssionError} from "./errors.js";
 
-function tokenizer(expression){
+export default function tokenizer(expression){
     expression = expression.replace(/\s/g, "");
     const len = expression.length;
     let i = 0;
@@ -7,7 +8,10 @@ function tokenizer(expression){
     const functions = ["sin", "cos", "tan", "log"];
     const tokenized_expression = [];
     while(i < len){
-        if(expression[i] >= '0' && expression[i] <= '9'){
+        if(expression[i] === 'y' && expression[i+1] === '='){
+            i += 2;
+        }
+        else if(expression[i] >= '0' && expression[i] <= '9'){
             let next = i + 1;
             let value = expression[i];
             while(expression[next] >= '0' && expression[next] <= '9'){
@@ -36,8 +40,7 @@ function tokenizer(expression){
             i++;
         }
         else{
-            alert("Invalid expression");
-            return false;
+            throw new ExpresssionError(`Unexpected character'${expression[i]}`);
         }
 
 

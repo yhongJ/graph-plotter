@@ -14,19 +14,27 @@
     </div> <br>
     <p>
         This site supports graphs of polynomial functions and basic transcendental functions
-        (sin, cos, tan, log, exp).
+        (sin, cos, tan, log, ^).
     </p> <br> <br>
 
     <p>
-        Examples: y = ax^3 + bx^2 + c, y = sin(x), y = cos(x), y = tan(x), y = log(x), y = a^x
+        Examples: y = a*x^3 + b*x^2 + c, y = sin(x), y = cos(x), y = tan(x), y = log(x), y = a^x
         <br> <br>
         ! log(x) represents the logarithm of x with base natural number e !
     </p> <br> <br>
 
     <form method="post" action="/addGraph">
-        <input type="text" name="graph">
-        <button type="submit">Add Graph</button>
+        <input id="graph" type="text" name="graph">
+        <button id="drawButton" type="submit">Add Graph</button>
     </form>
+    <script type = "module" src = "/js/plotter.js"></script>
+    <ul>
+        <li th:each="graph : ${graphs}">
+            <span th:text="${graph.graph}"></span>
+            <button type = "button" th:attr="data-id=${graph.id}"
+                    class = "deleteButton">Delete</button>
+        </li>
+    </ul>
 
 
 </body>
