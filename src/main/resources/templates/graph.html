@@ -31,8 +31,9 @@
     <ul>
         <li th:each="graph : ${graphs}">
             <span th:text="${graph.graph}"></span>
-            <button type = "button" th:attr="data-id=${graph.id}"
-                    class = "deleteButton">Delete</button>
+            <form th:action="@{/graphs/{id}(id=${graph.id})}" method="post">
+                <button type="submit">Delete</button>
+            </form>
         </li>
     </ul>
 
