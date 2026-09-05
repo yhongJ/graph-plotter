@@ -17,7 +17,6 @@ function draw(){
     errorBox.textContent = "";
 
 
-    let tokenized_expression = tokenizer(input.value);
     let tree;
     try {
         const tokens = tokenizer(input.value);
@@ -30,11 +29,15 @@ function draw(){
         throw e;                                // 내 버그 → 콘솔에 그대로 노출
     }
 
-    for(let i = -(canvas.width/2)/scale; i <= (canvas.width/2)/scale; i+= 0.1){
+    for(let i = -(canvas.width/2)/scale; i <= (canvas.width/2)/scale; i+= 0.001){
         ctx.beginPath();
-        ctx.arc(x_position(i), y_position(calculate(tree, i)), 3, 0, Math.PI * 2);
+        ctx.arc(x_position(i), y_position(calculate(tree, i)), 1, 0, Math.PI * 2);
         ctx.fill();
     }
 }
+document.querySelector("form[action='/addGraph']")
+    .addEventListener("submit", (e) => {
+        e.preventDefault();
+        draw();
+    }); //새로 좌표평면만 남는걸 막기위해
 
-document.getElementById("drawButton").addEventListener("click", draw);
