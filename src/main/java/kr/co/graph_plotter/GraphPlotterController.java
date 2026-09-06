@@ -14,19 +14,8 @@ public class GraphPlotterController {
     @GetMapping("/")
     public String graph(Model model) {
         model.addAttribute("graphs", graphRepository.findAll());
+        //db에서 모든 graph데이터를 가져와서 thymeleaf같은 뷰에서 사용할 수 있도록 전달
         return "graph";
-    }
-    @PostMapping("/addGraph")
-    public String addGraph(@RequestParam("graph") String graph){
-        Graph newGraph = new Graph(graph);
-        graphRepository.save(newGraph);
-        return "redirect:/";
-    }
-    @PostMapping("/graphs/{id}")
-    public String deleteGraph(@PathVariable Long id) {
-        graphRepository.deleteById(id);
-
-        return "redirect:/";
     }
 
 }
