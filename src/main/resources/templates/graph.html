@@ -12,6 +12,7 @@
         </canvas>
         <script src = "/js/coordinate.js"></script>
     </div> <br>
+
     <p>
         This site supports graphs of polynomial functions and basic transcendental functions
         (sin, cos, tan, log, ^).
@@ -22,13 +23,13 @@
         <br> <br>
         ! log(x) represents the logarithm of x with base natural number e !
     </p> <br> <br>
-
     <form id="addForm">
         <input id="graph" type="text" name="graph" autocomplete="off" placeholder="y=x^2">
         <button id="drawButton" type="submit">add graph</button>
+
+
     </form>
 
-    <p id="errorMessage"></p>
 
     <ul id="graphList">
         <li th:each="item : ${graphs}" th:data-id="${item.id}" th:data-expression="${item.graph}">

@@ -1,25 +1,52 @@
 import { ExpressionError} from "./errors.js";
 
+const operators = ['+', '-', '*', '/', '^'];
+const functions = ["sin", "cos", "tan", "log"];
+
+function isDigit(c){
+    if( c >= '0' && c <= '9' ) return true;
+    else return false;
+}
+
 export default function tokenizer(expression){
     expression = expression.replace(/\s/g, "");
+
+    if(expression === ""){
+        throw new ExpressionError("Enter an expression");
+    }
+
     const len = expression.length;
     let i = 0;
-    const operators = ['+', '-', '*', '/', '^'];
-    const functions = ["sin", "cos", "tan", "log"];
-    const tokenized_expression = [];
-    while(i < len){
-        if(expression[i] === 'y' && expression[i+1] === '='){
-            i += 2;
+
+    if(expression[0] === 'y' && expression[1] === '='){
+        i += 2;
+        if(i >= len){
+            throw new ExpressionError("Enter an expression after 'y='");
         }
-        else if(expression[i] >= '0' && expression[i] <= '9'){
-            let next = i + 1;
-            let value = expression[i];
-            while(expression[next] >= '0' && expression[next] <= '9'){
-                value += expression[next];
-                next++;
+    }
+
+    const tokenized_expression = [];
+
+    while(i < len){
+
+        if(isDigit(expression[i])){
+            let value = "";
+            while(isDigit(expression[i])){
+                value += expression[i];
+                i++;
+            }
+            if(expression[i] === '.'){ //소수 지원
+                value += '.';
+                i++;
+                if(!isDigit(expression[i])){
+                    throw new ExpressionError("Add a digit after '.'");
+                }
+                while(isDigit(expression[i])){
+                    value += expression[i];
+                    i++;
+                }
             }
             tokenized_expression.push(value);
-            i = next;
         }
         else if(operators.includes(expression[i])){
             tokenized_expression.push(expression[i]);
@@ -27,8 +54,7 @@ export default function tokenizer(expression){
         }
         else if(functions.includes(expression.slice(i, i + 3))) {
             if(expression[i + 3] !== '('){
-                alert("Transcendental functions require parentheses");
-                return false;
+                throw new ExpressionError("Transcendental functions require parentheses");
             }
             else{
                 tokenized_expression.push(expression.slice(i, i + 3));
@@ -40,7 +66,7 @@ export default function tokenizer(expression){
             i++;
         }
         else{
-            throw new ExpressionError(`Unexpected character'${expression[i]}`);
+            throw new ExpressionError(`Unexpected character'${expression[i]}'`);
         }
 
 

@@ -16,6 +16,7 @@
     min-height: 1.2em;   /* 메시지가 나타날 때 아래 요소가 밀리지 않게 */
 }
 
+
 input::placeholder {
     color: #c9c9c9;
 }

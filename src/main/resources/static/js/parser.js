@@ -2,6 +2,8 @@ import { ExpressionError } from "./errors.js";
 
 
 const functions = ["sin", "cos", "tan", "log"];
+const NUMBER = /^\d+(\.\d+)?$/;
+// 정수와 소수를 포함하는 정규 표혆식
 
 export class Parser{
     constructor(tokens){
@@ -69,7 +71,7 @@ export class Parser{
             this.pos ++;
             return left;
         }
-        else if(Number.isInteger(Number(left))){
+        else if(NUMBER.test(left)){
             this.pos++;
             return Number(left);
         }
@@ -81,8 +83,7 @@ export class Parser{
                 return left;
             }
             else{
-                alert("Invalid expression");
-                return false;
+                throw new ExpressionError("Close the parenthesis with ')'");
             }
         }
         else if(functions.includes(left)){
@@ -92,8 +93,7 @@ export class Parser{
             return new UnaryOP(op, operand);
         }
         else{
-            alert("Invalid expression");
-            return false;
+            throw new ExpressionError("Invalid expression");
         }
 
     }

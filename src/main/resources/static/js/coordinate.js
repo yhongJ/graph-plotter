@@ -33,3 +33,5 @@
         ctx.lineWidth = 1;
         ctx.stroke();
     }
+
+    drawPlane();
