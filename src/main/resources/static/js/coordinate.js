@@ -2,7 +2,7 @@
     const ctx = canvas.getContext("2d"); //그림을 그리는 도구
     canvas.width = 1300;
     canvas.height = 500;
-    const scale = 10;
+    const scale = 50;
 
     function drawPlane() {
         ctx.clearRect(0, 0, canvas.width, canvas.height); // 그래프를 지웠을 때 아예 새로그리기 위함.
@@ -30,6 +30,6 @@
         ctx.moveTo(canvas.width/2, 0);
         ctx.lineTo(canvas.width/2, canvas.height);
 
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 1;
         ctx.stroke();
     }

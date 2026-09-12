@@ -5,12 +5,12 @@ import calculate from "./calculate.js";
 
 const canvas = document.getElementById("plane");
 const ctx = canvas.getContext("2d");
-const scale = 10;
+const scale = 50;
 const errorBox = document.getElementById("errorMessage");
 const graphList = document.getElementById("graphList");
 
-//800 * 500 에서 원점은 (400, 250)
-//100px당 10으로 -> x (-40 ~ 40) y (-25 ~ 25)
+//1300 * 500 에서 원점은 (650, 250)
+//50px당 1로 -> x (-13 ~ 13) y (-5 ~ 5)
 function x_position(x){
     return (x * scale) + canvas.width/2;
 }
@@ -24,7 +24,7 @@ function draw(expression) {
     ctx.beginPath();
     ctx.lineWidth = 1;
 
-    const step = 0.03;
+    const step = 0.01;
     const half = (canvas.width / 2) / scale;
     let started = false;
 
