@@ -8,6 +8,8 @@ const canvas = document.getElementById("plane");
 const ctx = canvas.getContext("2d");
 const scale = 50;
 const graphList = document.getElementById("graphList");
+const colors = ["#E41A1C", "#377EB8", "#009E73", "#E69F00", "#7B2CBF", "#00A6A6", "#D81B60"];
+let color = 0;
 
 //1300 * 500 에서 원점은 (650, 250)
 //50px당 1로 -> x (-13 ~ 13) y (-5 ~ 5)
@@ -36,6 +38,9 @@ function draw(expression) {
 
     ctx.beginPath();
     ctx.lineWidth = 1;
+    ctx.strokeStyle = colors[color];
+    color += 1;
+    if(color === 7) color = 0;
 
     const step = 0.01;
     const half = (canvas.width / 2) / scale;
@@ -61,6 +66,7 @@ function draw(expression) {
 
 function drawAll(){
     drawPlane();
+    color = 0;
     for(const item of graphList.querySelectorAll('li')){
         try{
             draw(item.dataset.expression);
