@@ -1,44 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Graph Plotter</title>
-    <link rel = "stylesheet" type = "text/css" href = "/css/graph.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aaaakshat/cm-web-fonts@latest/fonts.css">
+    <!-- 논문 기본 폰트 -->
+    <link rel="stylesheet" type="text/css" href="/css/graph.css">
 </head>
 <body>
-    <h1>2D coordinate plane </h1> <br> <br>
-    <div class = "graph">
-        <canvas id = "plane">
-        </canvas>
-        <script src = "/js/coordinate.js"></script>
-    </div> <br>
+<header class="title">
+    <h1>2D coordinate plane</h1>
+</header>
 
-    <p>
-        This site supports graphs of polynomial functions and basic transcendental functions
-        (sin, cos, tan, log, ^).
-    </p> <br> <br>
+<figure class="graph">
+    <div class="plane-scroll">
+        <canvas id="plane"></canvas>
+    </div>
+    <script src="/js/coordinate.js"></script>
+    <figcaption><b>Figure</b> Functions plotted on the plane, where 1 unit equals 50&nbsp;px.</figcaption>
+</figure>
 
-    <p>
-        Examples: y = a*x^3 + b*x^2 + c, y = sin(x), y = cos(x), y = tan(x), y = log(x), y = a^x
-        <br> <br>
-        ! log(x) represents the logarithm of x with base natural number e !
-    </p> <br> <br>
-    <form id="addForm">
-        <input id="graph" type="text" name="graph" autocomplete="off" placeholder="y=x^2">
-        <button id="drawButton" type="submit">add graph</button>
+<main class="paper">
+    <section class="abstract">
+        <h2>Abstract</h2>
+        <p>
+            This site supports graphs of polynomial functions and basic transcendental functions
+            (<span class="math">sin</span>, <span class="math">cos</span>, <span class="math">tan</span>,
+            <span class="math">log</span>, <span class="math">^</span>).
+        </p>
+        <p class="examples">
+            Examples:
+            <span class="math">y = a*x^3 + b*x^2 + c</span>,
+            <span class="math">y = sin(x)</span>,
+            <span class="math">y = cos(x)</span>,
+            <span class="math">y = tan(x)</span>,
+            <span class="math">y = log(x)</span>,
+            <span class="math">y = a^x</span>
+        </p>
+    </section>
 
+    <section class="functions">
+        <h2>Functions</h2>
 
-    </form>
+        <form id="addForm">
+            <label class="visually-hidden" for="graph">Function</label>
+            <input id="graph" type="text" name="graph" autocomplete="off" placeholder="y=x^2">
+            <button id="drawButton" type="submit">Add graph</button>
+        </form>
 
+        <ul id="graphList">
+            <li th:each="item : ${graphs}" th:data-id="${item.id}" th:data-expression="${item.graph}">
+                <span th:text="${item.graph}"></span>
+                <button type="button" class="delete">Delete</button>
+            </li>
+        </ul>
+    </section>
 
-    <ul id="graphList">
-        <li th:each="item : ${graphs}" th:data-id="${item.id}" th:data-expression="${item.graph}">
-            <span th:text="${item.graph}"></span>
-            <button type="button" class="delete">Delete</button>
-        </li>
-    </ul>
+    <p class="footnote">
+        <span class="math">log(x)</span> is the natural logarithm of <span class="math">x</span>, with base <span class="math">e</span>.
+    </p>
+</main>
 
-    <script type = "module" src = "/js/plotter.js"></script>
-
+<script type="module" src="/js/plotter.js"></script>
 </body>
 </html>

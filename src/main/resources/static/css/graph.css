@@ -1,23 +1,230 @@
-*{
+
+:root {
+    --desk: #DCE3EA;        /* 좌표 밖 배경: 노란색과 대비되는 옅은 청회색 */
+    --note: #FFF6C2;        /* 노트 색 (좌표 배경) */
+    --note-edge: #E9DC9A;
+    --ink: #1C2A44;         /* 본문 글자: 만년필 잉크 같은 남색 */
+    --ink-soft: #4F5D74;
+    --rule: #9EABBC;
+    --danger: #B42318;
+
+    --serif: "Computer Modern Serif", "CMU Serif", "Latin Modern Roman",
+    "Times New Roman", "Noto Serif KR", serif;
+}
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+body {
+    background: var(--desk);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    padding: 3.5rem 1.25rem 5rem;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- 제목 ---------- */
+.title {
     text-align: center;
+    margin-bottom: 2.25rem;
+}
+
+.title h1 {
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    font-weight: normal;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+}
+
+/* ---------- 좌표평면 (노트 한 장) ---------- */
+.graph {
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto 3rem;
+}
+
+.plane-scroll {
+    max-width: 100%;
+    overflow-x: auto;           /* 화면이 좁으면 캔버스만 가로 스크롤 */
+    padding: 4px 16px 28px;     /* 그림자가 잘리지 않도록 여백 */
 }
 
 #plane {
+    display: block;
     width: 1300px;
     height: 500px;
+    background: var(--note);
+    border-radius: 2px;
+    /* border 대신 box-shadow 사용: 크기(1300×500)에 영향을 주지 않음 */
+    box-shadow:
+            0 0 0 1px var(--note-edge),
+            0 2px 3px rgba(28, 42, 68, 0.12),
+            0 18px 36px -14px rgba(28, 42, 68, 0.38);
 }
 
-.error {
-    color: #d32f2f;
+.graph figcaption {
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    padding: 0 16px;
+}
+
+.graph figcaption b {
+    color: var(--ink);
+}
+
+/* ---------- 본문 (논문 한 단) ---------- */
+.paper {
+    max-width: 40rem;
+    margin: 0 auto;
+}
+
+.paper h2 {
+    font-size: 1.15rem;
+    font-weight: bold;
+    margin-bottom: 0.6rem;
+}
+
+.abstract {
+    margin-bottom: 2.75rem;
+}
+
+.abstract h2 {
+    text-align: center;
+}
+
+.abstract p {
+    text-align: justify;
+    hyphens: auto;
+}
+
+.abstract p + p {
+    margin-top: 0.75rem;
+}
+
+.math {
+    font-style: italic;
+    white-space: nowrap;
+}
+
+/* ---------- 입력 폼 ---------- */
+#addForm {
+    display: flex;
+    gap: 0.75rem;
+    align-items: stretch;
+    margin-bottom: 1.25rem;
+}
+
+#graph {
+    flex: 1;
+    min-width: 0;
+    font: italic 1.15rem/1.4 var(--serif);
+    color: var(--ink);
+    background: var(--note);
+    border: none;
+    border-bottom: 2px solid var(--ink);
+    border-radius: 2px 2px 0 0;
+    padding: 0.6rem 0.9rem;
+}
+
+#graph::placeholder {
+    color: #A99F6A;
+}
+
+#drawButton {
+    font: 1rem var(--serif);
+    color: var(--note);
+    background: var(--ink);
+    border: none;
+    border-radius: 3px;
+    padding: 0.6rem 1.3rem;
+    cursor: pointer;
+}
+
+#drawButton:hover {
+    background: #2C3F63;
+}
+
+#drawButton:active {
+    transform: translateY(1px);
+}
+
+/* ---------- 그래프 목록: 논문 수식 번호 (1), (2)… ---------- */
+#graphList {
+    list-style: none;
+    counter-reset: eq;
+    border-top: 1px solid var(--rule);
+}
+
+#graphList li {
+    counter-increment: eq;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    column-gap: 1.25rem;
+    padding: 0.6rem 0.25rem;
+    border-bottom: 1px solid var(--rule);
+}
+
+#graphList li span {
+    order: 1;
+    text-align: center;
+    font-style: italic;
+    font-size: 1.15rem;
+    overflow-wrap: anywhere;
+}
+
+#graphList li::after {
+    order: 2;
+    content: "(" counter(eq) ")";
+    color: var(--ink-soft);
+}
+
+#graphList li .delete {
+    order: 3;
+    font: 0.9rem var(--serif);
+    color: var(--danger);
+    background: none;
+    border: none;
+    padding: 0.2rem 0.3rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 3px;
+}
+
+#graphList li .delete:hover {
+    text-decoration-color: currentColor;
+}
+
+#graphList:not(:has(li))::before {
+    content: "No graphs yet. Enter a function above to plot it.";
+    display: block;
+    padding: 0.9rem 0;
+    text-align: center;
+    color: var(--ink-soft);
+    font-style: italic;
+}
+
+/* ---------- 각주 ---------- */
+.footnote {
+    margin-top: 3rem;
+    padding-top: 0.5rem;
     font-size: 0.9rem;
-    min-height: 1.2em;   /* 메시지가 나타날 때 아래 요소가 밀리지 않게 */
+    color: var(--ink-soft);
+    position: relative;
 }
 
-
-input::placeholder {
-    color: #c9c9c9;
+.footnote::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30%;
+    border-top: 1px solid var(--rule);
 }
-

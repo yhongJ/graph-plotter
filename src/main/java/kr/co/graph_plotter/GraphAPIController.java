@@ -12,7 +12,7 @@ public class GraphAPIController {
         this.graphRepository = graphRepository;
     }
     @PostMapping("/api/graphs")
-    public Graph add(@RequestBody GraphRequest request) { //ResponseEntity: 사용자의 응답데이터 클래스
+    public Graph add(@RequestBody GraphRequest request) {
         Graph newGraph = new Graph(request.expression());
         return graphRepository.save(newGraph); //JSON
     }
