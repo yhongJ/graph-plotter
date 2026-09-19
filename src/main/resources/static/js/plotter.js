@@ -6,10 +6,13 @@ import {ExpressionError} from "./errors.js";
 
 const canvas = document.getElementById("plane");
 const ctx = canvas.getContext("2d");
-const scale = 50;
+let scale = 50;
+const MIN_SCALE = 5;
+const MAX_SCALE = 400;
 const graphList = document.getElementById("graphList");
 const colors = ["#E41A1C", "#377EB8", "#009E73", "#E69F00", "#7B2CBF", "#00A6A6", "#D81B60"];
 let color = 0;
+
 
 //1300 * 500 에서 원점은 (650, 250)
 //50px당 1로 -> x (-13 ~ 13) y (-5 ~ 5)
@@ -20,6 +23,7 @@ function y_position(y){
     return (-1 * y * scale) + canvas.height/2;
 }
 
+
 function showError(err, fallback = "Something went wrong. Try again.") {
     let isUserError;
     if (err instanceof ExpressionError) {
@@ -28,7 +32,7 @@ function showError(err, fallback = "Something went wrong. Try again.") {
         isUserError = false;
     }
 
-    if (!isUserError) console.error(err);   // err.message 아니라 err
+    if (!isUserError) console.error(err);
 
     alert(isUserError ? err.message : fallback);
 }
@@ -39,33 +43,45 @@ function draw(expression) {
     ctx.beginPath();
     ctx.lineWidth = 1;
     ctx.strokeStyle = colors[color];
-    color += 1;
-    if(color === 7) color = 0;
+    color = (color + 1) % colors.length;
 
-    const step = 0.01;
-    const half = (canvas.width / 2) / scale;
+    const step = 0.05;
+    const margin = canvas.height; // 화면 위아래로 이만큼까지 선을 이어줌
     let started = false;
+    let prevPy = 0;
 
-    for (let i = -half; i <= half; i += step) {
-        const y = calculate(tree, i);
+    for (let px = 0; px <= canvas.width; px += step) {
+        const x = (px - canvas.width / 2) / scale;
+        const y = calculate(tree, x);
 
-        if (!Number.isFinite(y) || Math.abs(y) > (canvas.height / (scale * 2)) * 1.5) {
-            started = false;   // tan, log 같은 불연속 지점에서 선 끊기
+        if (!Number.isFinite(y)) {
+            started = false;
             continue;
         }
 
-        const px = x_position(i), py = y_position(y);
+        const py = y_position(y);
+
+        if(py < -margin || py > canvas.height + margin) {
+            started = false;
+            continue;
+        }
+
+        if(started && Math.abs(py - prevPy) > canvas.height) started = false;
+        //y값은 저장하되, 값이 튀면 그리지않는다. ex)점근선
+
         if (started) ctx.lineTo(px, py);
         else {
             ctx.moveTo(px, py);
             started = true; }
+
+        prevPy = py;
     }
 
     ctx.stroke();
 }
 
 function drawAll(){
-    drawPlane();
+    drawPlane(scale);
     color = 0;
     for(const item of graphList.querySelectorAll('li')){
         try{
@@ -77,7 +93,25 @@ function drawAll(){
     }
 }
 
+let pending = false;
+
+function scheduleDraw() { //drawAll이 꽤 무겁기 떄문에, 실행 횟수를 줄이기 위함
+    if (pending) return;          // 이미 예약돼 있으면 무시
+    pending = true;
+    requestAnimationFrame(() => { //  다음 화면 갱신 직전에 실행 예약 (쓸데없는 실행은 제외하고, 화면 갱신 속도에 맞춤)
+        pending = false;
+        drawAll();
+    });
+}
+
+
+function setScale(nextScale) {
+    scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, nextScale));
+    scheduleDraw();
+}
+
 drawAll();
+
 
 async function onAddGraph(e){
     e.preventDefault(); //페이지 이동 막음
@@ -132,6 +166,15 @@ async function onDeleteGraph(e){
     }
 
 }
+
+document.getElementById("zoomIn").onclick = () => setScale(scale * 1.5);
+document.getElementById("zoomOut").onclick = () => setScale(scale / 1.5);
+document.getElementById("zoomReset").onclick = () => setScale(50);
+
+canvas.addEventListener("wheel", (e) => {
+    e.preventDefault();                       // 페이지 스크롤 막기
+    setScale(scale * Math.exp(-e.deltaY * 0.001));
+}, { passive: false });
 document.getElementById("addForm").addEventListener("submit", onAddGraph);
 graphList.addEventListener("click", onDeleteGraph);
 

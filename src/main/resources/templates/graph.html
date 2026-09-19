@@ -15,10 +15,17 @@
 
 <figure class="graph">
     <div class="plane-scroll">
-        <canvas id="plane"></canvas>
+        <div class="plane-frame">
+            <canvas id="plane"></canvas>
+            <div class="zoom">
+                <button type="button" id="zoomOut" aria-label="Zoom out">−</button>
+                <button type="button" id="zoomReset">Reset</button>
+                <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
+            </div>
+        </div>
     </div>
     <script src="/js/coordinate.js"></script>
-    <figcaption><b>Figure</b> Functions plotted on the plane, where 1 unit equals 50&nbsp;px.</figcaption>
+    <figcaption><b>Figure</b> Functions plotted on the coordinate plane.</figcaption>
 </figure>
 
 <main class="paper">

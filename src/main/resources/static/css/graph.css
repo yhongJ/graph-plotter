@@ -228,3 +228,35 @@ body {
     width: 30%;
     border-top: 1px solid var(--rule);
 }
+.plane-frame {
+    position: relative;
+    width: fit-content;
+}
+
+.zoom {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: rgba(255, 246, 194, 0.85);
+    backdrop-filter: blur(2px);
+    border: 1px solid var(--note-edge);
+    border-radius: 4px;
+}
+
+.zoom button {
+    font: 0.95rem var(--serif);
+    color: var(--ink);
+    background: none;
+    border: none;
+    border-radius: 3px;
+    padding: 0.3rem 0.6rem;
+    min-width: 2.2rem;
+    cursor: pointer;
+}
+
+.zoom button:hover {
+    background: rgba(28, 42, 68, 0.1);
+}
